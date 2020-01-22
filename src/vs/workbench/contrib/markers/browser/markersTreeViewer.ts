@@ -43,6 +43,7 @@ import { IEditorService, ACTIVE_GROUP } from 'vs/workbench/services/editor/commo
 import { applyCodeAction } from 'vs/editor/contrib/codeAction/codeActionCommands';
 import { SeverityIcon } from 'vs/platform/severityIcon/common/severityIcon';
 import { CodeActionTriggerType } from 'vs/editor/common/modes';
+import { IOpenerService } from 'vs/platform/opener/common/opener';
 
 export type TreeElement = ResourceMarkers | Marker | RelatedInformation;
 
@@ -217,14 +218,15 @@ export class MarkerRenderer implements ITreeRenderer<Marker, MarkerFilterData, I
 
 	constructor(
 		private readonly markersViewState: MarkersViewModel,
-		@IInstantiationService protected instantiationService: IInstantiationService
+		@IInstantiationService protected instantiationService: IInstantiationService,
+		@IOpenerService protected openerService: IOpenerService
 	) { }
 
 	templateId = TemplateId.Marker;
 
 	renderTemplate(container: HTMLElement): IMarkerTemplateData {
 		const data: IMarkerTemplateData = Object.create(null);
-		data.markerWidget = new MarkerWidget(container, this.markersViewState, this.instantiationService);
+		data.markerWidget = new MarkerWidget(container, this.markersViewState, this.openerService, this.instantiationService);
 		return data;
 	}
 
@@ -249,6 +251,7 @@ class MarkerWidget extends Disposable {
 	constructor(
 		private parent: HTMLElement,
 		private readonly markersViewModel: MarkersViewModel,
+		private openerService: IOpenerService,
 		instantiationService: IInstantiationService
 	) {
 		super();
@@ -335,9 +338,28 @@ class MarkerWidget extends Disposable {
 			source.set(marker.source, sourceMatches);
 
 			if (marker.code) {
-				const code = new HighlightedLabel(dom.append(parent, dom.$('.marker-code')), false);
-				const codeMatches = filterData && filterData.codeMatches || [];
-				code.set(marker.code, codeMatches);
+				if (typeof marker.code === 'string') {
+					const code = new HighlightedLabel(dom.append(parent, dom.$('.marker-code')), false);
+					const codeMatches = filterData && filterData.codeMatches || [];
+					code.set(marker.code, codeMatches);
+				} else {
+					const codeLinkAnchor = dom.$('a.code-link');
+					const codeLink = marker.code.link.toString();
+
+					dom.append(parent, codeLinkAnchor);
+					codeLinkAnchor.setAttribute('href', codeLink);
+					codeLinkAnchor.style.textDecoration = 'underline';
+
+					codeLinkAnchor.onclick = (e) => {
+						this.openerService.open(URI.parse(codeLink));
+						e.preventDefault();
+						e.stopPropagation();
+					};
+
+					const code = new HighlightedLabel(dom.append(codeLinkAnchor, dom.$('.marker-code')), false);
+					const codeMatches = filterData && filterData.codeMatches || [];
+					code.set(marker.code.value, codeMatches);
+				}
 			}
 		}
 

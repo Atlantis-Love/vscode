@@ -500,10 +500,22 @@ export class ModesContentHoverWidget extends ContentHoverWidget {
 		messageElement.innerText = message;
 
 		if (source || code) {
-			const detailsElement = dom.append(markerElement, $('span'));
-			detailsElement.style.opacity = '0.6';
-			detailsElement.style.paddingLeft = '6px';
-			detailsElement.innerText = source && code ? `${source}(${code})` : source ? source : `(${code})`;
+			if (typeof code === 'string') {
+				const detailsElement = dom.append(markerElement, $('span'));
+				detailsElement.style.opacity = '0.6';
+				detailsElement.style.paddingLeft = '6px';
+				detailsElement.innerText = source && code ? `${source}(${code})` : source ? source : `(${code})`;
+			} else {
+				if (code) {
+					const codeLinkElement = $('a');
+					const detailsElement = dom.append(markerElement, codeLinkElement);
+					codeLinkElement.innerText = source && code ? `${source}(${code.value})` : source ? source : `(${code.value})`;
+					codeLinkElement.setAttribute('href', code.link.toString());
+					detailsElement.style.opacity = '0.6';
+					detailsElement.style.paddingLeft = '6px';
+					// detailsElement.innerText = source && code ? `${source}(${code})` : source ? source : `(${code})`;
+				}
+			}
 		}
 
 		if (isNonEmptyArray(relatedInformation)) {

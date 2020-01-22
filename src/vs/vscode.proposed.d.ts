@@ -1429,7 +1429,13 @@ declare module 'vscode' {
 	//#region Diagnostic links https://github.com/microsoft/vscode/issues/11847
 
 	export interface Diagnostic {
-		referenceLink: Uri;
+		/**
+		 * Will be merged into `Diagnostic#code`
+		 */
+		code2?: {
+			value: string | number;
+			link: Uri;
+		}
 	}
 
 	//#endregion

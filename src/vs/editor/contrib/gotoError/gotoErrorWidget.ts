@@ -111,10 +111,18 @@ class MessageWidget {
 				detailsElement.appendChild(sourceElement);
 			}
 			if (code) {
-				const codeElement = document.createElement('span');
-				codeElement.innerText = `(${code})`;
-				dom.addClass(codeElement, 'code');
-				detailsElement.appendChild(codeElement);
+				if (typeof code === 'string') {
+					const codeElement = document.createElement('span');
+					codeElement.innerText = `(${code})`;
+					dom.addClass(codeElement, 'code');
+					detailsElement.appendChild(codeElement);
+				} else {
+					const codeElement = document.createElement('a');
+					codeElement.innerText = `(${code.value})`;
+					codeElement.setAttribute('href', `${code.link.toString()}`);
+					dom.addClass(codeElement, 'code');
+					detailsElement.appendChild(codeElement);
+				}
 			}
 		}
 

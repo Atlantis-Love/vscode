@@ -45,8 +45,14 @@
 }
 
 .monaco-editor .marker-widget .descriptioncontainer .message .source,
-.monaco-editor .marker-widget .descriptioncontainer .message .code {
+.monaco-editor .marker-widget .descriptioncontainer .message span.code {
 	opacity: 0.6;
+}
+
+.monaco-editor .marker-widget .descriptioncontainer .message a.code {
+	opacity: 0.6;
+	color: inherit;
+	text-decoration: underline;
 }
 
 .monaco-editor .marker-widget .descriptioncontainer .filename {
