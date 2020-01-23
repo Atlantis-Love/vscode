@@ -473,7 +473,14 @@ export class Filter implements ITreeFilter<TreeElement, FilterData> {
 			lineMatches.push(FilterOptions._messageFilter(this.options.textFilter, line) || []);
 		}
 		const sourceMatches = marker.marker.source && FilterOptions._filter(this.options.textFilter, marker.marker.source);
-		const codeMatches = marker.marker.code && FilterOptions._filter(this.options.textFilter, marker.marker.code);
+
+		let codeMatches: IMatch[] | null | undefined;
+		if (marker.marker.code) {
+			const codeText = typeof marker.marker.code === 'string' ? marker.marker.code : marker.marker.code.value;
+			codeMatches = FilterOptions._filter(this.options.textFilter, codeText);
+		} else {
+			codeMatches = undefined;
+		}
 
 		if (sourceMatches || codeMatches || lineMatches.some(lineMatch => lineMatch.length > 0)) {
 			return { visibility: true, data: { type: FilterDataType.Marker, lineMatches, sourceMatches: sourceMatches || [], codeMatches: codeMatches || [] } };
