@@ -110,3 +110,17 @@
 	font-size: inherit;
 	vertical-align: middle;
 }
+
+.monaco-editor-hover .hover-contents a.code-link:before {
+	content: '(';
+}
+.monaco-editor-hover .hover-contents a.code-link:after {
+	content: ')';
+}
+
+.monaco-editor-hover .hover-contents a.code-link {
+	color: inherit;
+}
+.monaco-editor-hover .hover-contents a.code-link > span {
+	text-decoration: underline;
+}

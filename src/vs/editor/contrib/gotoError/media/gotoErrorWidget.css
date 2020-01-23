@@ -49,9 +49,17 @@
 	opacity: 0.6;
 }
 
-.monaco-editor .marker-widget .descriptioncontainer .message a.code {
+.monaco-editor .marker-widget .descriptioncontainer .message a.code-link {
 	opacity: 0.6;
 	color: inherit;
+}
+.monaco-editor .marker-widget .descriptioncontainer .message a.code-link:before {
+	content: '(';
+}
+.monaco-editor .marker-widget .descriptioncontainer .message a.code-link:after {
+	content: ')';
+}
+.monaco-editor .marker-widget .descriptioncontainer .message a.code-link > span {
 	text-decoration: underline;
 }
 

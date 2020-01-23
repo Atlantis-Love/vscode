@@ -344,14 +344,14 @@ class MarkerWidget extends Disposable {
 					code.set(marker.code, codeMatches);
 				} else {
 					const codeLinkAnchor = dom.$('a.code-link');
-					const codeLink = marker.code.link.toString();
+					const codeUri = marker.code.link;
+					const codeLink = codeUri.toString();
 
 					dom.append(parent, codeLinkAnchor);
 					codeLinkAnchor.setAttribute('href', codeLink);
-					codeLinkAnchor.style.textDecoration = 'underline';
 
 					codeLinkAnchor.onclick = (e) => {
-						this.openerService.open(URI.parse(codeLink));
+						this.openerService.open(codeUri);
 						e.preventDefault();
 						e.stopPropagation();
 					};

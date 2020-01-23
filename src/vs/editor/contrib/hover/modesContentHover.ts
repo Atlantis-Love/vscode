@@ -507,10 +507,24 @@ export class ModesContentHoverWidget extends ContentHoverWidget {
 				detailsElement.innerText = source && code ? `${source}(${code})` : source ? source : `(${code})`;
 			} else {
 				if (code) {
-					const codeLinkElement = $('a');
-					const detailsElement = dom.append(markerElement, codeLinkElement);
-					codeLinkElement.innerText = source && code ? `${source}(${code.value})` : source ? source : `(${code.value})`;
+					const sourceAndCodeElement = $('span');
+					if (source) {
+						const sourceElement = dom.append(sourceAndCodeElement, $('span'));
+						sourceElement.innerText = source;
+					}
+					const codeLinkElement = dom.append(sourceAndCodeElement, $('a.code-link'));
 					codeLinkElement.setAttribute('href', code.link.toString());
+
+					codeLinkElement.onclick = (e) => {
+						this._openerService.open(code.link);
+						e.preventDefault();
+						e.stopPropagation();
+					};
+
+					const codeElement = dom.append(codeLinkElement, $('span'));
+					codeElement.innerText = code.value;
+
+					const detailsElement = dom.append(markerElement, sourceAndCodeElement);
 					detailsElement.style.opacity = '0.6';
 					detailsElement.style.paddingLeft = '6px';
 					// detailsElement.innerText = source && code ? `${source}(${code})` : source ? source : `(${code})`;
